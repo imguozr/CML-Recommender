@@ -6,3 +6,4 @@ toolz
 scikit-learn
 pymongo
 flask
+flask-cors

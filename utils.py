@@ -1,19 +1,14 @@
 import numpy as np
 from scipy.sparse import dok_matrix, lil_matrix
 from tqdm import tqdm
-import tensorflow as tf
-import tensorflow.contrib.keras as kr
-
-# from .CML import CML
 
 
 def goodbooks():
-    csv_path = '~//Documents//Codes//PythonProjects//CML-Recom//model//goodbooks-10k//ratings.csv'
     user_set = set([])
     item_set = set([])
     user_max = 0
     item_max = 0
-    for u, item_list in enumerate(open(csv_path).readlines()):
+    for u, item_list in enumerate(open('goodbooks-10k/ratings.csv').readlines()):
         items = item_list.strip().split(",")
         if items[0] != 'user_id':
             user_id = int(items[0])
@@ -24,7 +19,7 @@ def goodbooks():
                 item_max = item_id
             if user_id > user_max:
                 user_max = user_id
-            if len(user_set) == 1000:
+            if len(user_set) == 2000:
                 break
 
     n_users = user_max + 1
@@ -32,7 +27,7 @@ def goodbooks():
 
     user_item_matrix = dok_matrix((n_users, n_items), dtype=np.int32)
 
-    for u, item_list in enumerate(open(csv_path).readlines()):
+    for u, item_list in enumerate(open('goodbooks-10k/ratings.csv').readlines()):
         items = item_list.strip().split(",")
         if items[0] != 'user_id':
             user_id = int(items[0])
@@ -74,7 +69,3 @@ def split_data(user_item_matrix, split_ratio=(3, 1, 1), seed=1):
         len(test.nonzero()[0])))
 
     return train, validation, test
-
-
-def transform_model():
-    pass

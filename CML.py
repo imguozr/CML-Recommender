@@ -6,9 +6,9 @@ import tensorflow as tf
 import toolz
 from tqdm import tqdm
 
-from model.evaluator import RecallEvaluator
-from model.sampler import WarpSampler
-from model.utils import split_data, goodbooks
+from evaluator import RecallEvaluator
+from sampler import WarpSampler
+from utils import split_data, goodbooks
 
 
 def doublewrap(function):
@@ -300,7 +300,7 @@ def optimize(model, sampler, train, valid):
     #     sess.run(tf.assign(model.item_embeddings, model.feature_projection))
 
     # sample some users to calculate recall validation
-    valid_users = numpy.random.choice(list(set(valid.nonzero()[0])), size=100, replace=False)
+    valid_users = numpy.random.choice(list(set(valid.nonzero()[0])), size=1000, replace=False)
 
     while True:
         # create evaluator on validation set
@@ -309,7 +309,7 @@ def optimize(model, sampler, train, valid):
         valid_recalls = []
 
         # compute recall in chunks to utilize speedup provided by Tensorflow
-        for user_chunk in toolz.partition_all(10, valid_users):
+        for user_chunk in toolz.partition_all(100, valid_users):
             valid_recalls.extend([validation_recall.eval(sess, user_chunk)])
         print("\nRecall on (sampled) validation set: {}".format(numpy.mean(valid_recalls)))
         # TODO: early stopping based on validation recall
@@ -334,7 +334,6 @@ def optimize(model, sampler, train, valid):
 
 if __name__ == '__main__':
     # get user-item matrix
-    # user_item_matrix, features = citeulike(tag_occurence_thres=5)
     user_item_matrix = goodbooks()
     n_users, n_items = user_item_matrix.shape
     # make feature as dense matrix
