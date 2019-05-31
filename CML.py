@@ -284,8 +284,6 @@ def optimize(model, sampler, train, valid):
     :return: None
     """
 
-    total_iterations = 0
-
     sess = tf.Session()
     sess.run(tf.global_variables_initializer())
 
@@ -293,7 +291,7 @@ def optimize(model, sampler, train, valid):
 
     save_dir = 'checkpoints/'  # 保存目录
 
-    save_path = os.path.join(save_dir, 'model')
+    save_path = os.path.join(save_dir, 'model2')
 
     # if model.feature_projection is not None:
     #     # initialize item embedding with feature projection
@@ -327,9 +325,7 @@ def optimize(model, sampler, train, valid):
 
         print("\nTraining loss {}".format(numpy.mean(losses)))
 
-        total_iterations += 1
-        if total_iterations % 10 == 0:
-            saver.save(sess=sess, save_path=save_path)
+        saver.save(sess=sess, save_path=save_path)
 
 
 if __name__ == '__main__':
